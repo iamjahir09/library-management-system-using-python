@@ -1,0 +1,28 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="The Old Library — a simple digital library management system.">
+  <title>{% block title %}The Old Library{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<header class="site-header"><div class="nav-wrap">
+  <a class="brand" href="{% url 'home' %}"><span class="brand-mark">OL</span><span>The Old Library<small>Knowledge lives here</small></span></a>
+  <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
+  <nav class="main-nav" id="mainNav">
+    <a href="{% url 'book_list' %}">Browse Books</a>
+    {% if user.is_authenticated %}<a href="{% url 'dashboard' %}">Dashboard</a><a href="{% url 'borrowing_list' %}">My Borrowings</a>{% if user.is_staff %}<a href="{% url 'book_create' %}">Add Book</a>{% endif %}
+    <span class="nav-user">Hi, {{ user.first_name|default:user.username }}</span>
+    <form action="{% url 'logout' %}" method="post" class="inline-form">{% csrf_token %}<button class="nav-logout" type="submit">Log out</button></form>
+    {% else %}<a href="{% url 'login' %}">Log in</a><a class="nav-cta" href="{% url 'signup' %}">Join the Library</a>{% endif %}
+  </nav>
+</div></header>
+<main class="page-shell">
+  {% if messages %}<div class="messages">{% for message in messages %}<div class="message message-{{ message.tags }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+  {% block content %}{% endblock %}
+</main>
+<footer class="site-footer"><div class="footer-inner"><div><a class="brand footer-brand" href="{% url 'home' %}"><span class="brand-mark">OL</span><span>The Old Library<small>Read. Learn. Grow.</small></span></a></div><p>A digital space for curious minds and lifelong learners.</p></div></footer>
+<script src="{% static 'js/app.js' %}"></script>
+</body></html>
